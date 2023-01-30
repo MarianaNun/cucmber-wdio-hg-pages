@@ -1,0 +1,17 @@
+# Dependency directories
+node_modules/
+.yarn/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# tests
+tmp
+reports
+Results
+
+# Allure report
+allure-report
+allure-results
