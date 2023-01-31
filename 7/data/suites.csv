@@ -1,0 +1,5 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Tue Jan 31 01:42:38 GMT 2023","Tue Jan 31 01:42:38 GMT 2023","4","","Create account: Login with invalid data","","Create account: Login with invalid data","Then I should see a flash message saying Your username is invalid!","Then I should see a flash message saying Your username is invalid!",""
+"passed","Tue Jan 31 01:42:38 GMT 2023","Tue Jan 31 01:42:39 GMT 2023","1184","","Create account: Login with invalid data","","Create account: Login with invalid data","","",""
+"passed","Tue Jan 31 01:42:38 GMT 2023","Tue Jan 31 01:42:38 GMT 2023","6","","Create account: Login with invalid data","","Create account: Login with invalid data","When I login with username and password","When I login with username and password",""
+"passed","Tue Jan 31 01:42:38 GMT 2023","Tue Jan 31 01:42:38 GMT 2023","4","","Create account: Login with invalid data","","Create account: Login with invalid data","Given I am on the login page","Given I am on the login page",""
