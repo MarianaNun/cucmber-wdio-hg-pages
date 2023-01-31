@@ -5,7 +5,6 @@ import format from 'date-fns/format';
 const today = new Date();
 const formatedDate = format(today, 'dd/MMM/yyyy-HH:mm:ss');
 
-
 exports.config = {
   // ...
   //
@@ -68,19 +67,19 @@ exports.config = {
     // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
     // excludeDriverLogs: ['bugreport', 'server'],
   }],
-  */
-  capabilities: [
+  */  capabilities: [
     {
-      browserName: 'Chrome',
-      'LT:Options': {
-        build: `Chrome-${formatedDate}`,
-        platform: 'Windows',
-        browserName: 'Chrome',
-        version: '100.0',
-        resolution: '1920x1080',
-        'lambda:userFiles': ['house.png'],
-        network: true,
-      },
+      // maxInstances can get overwritten per capability. So if you have an in-house Selenium
+      // grid with only 5 firefox instances available you can make sure that not more than
+      // 5 instances get started at a time.
+      maxInstances: 1,
+      //
+      browserName: 'chrome',
+      acceptInsecureCerts: true,
+      // If outputDir is provided WebdriverIO can capture driver session logs
+      // it is possible to configure which logTypes to include/exclude.
+      // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
+      // excludeDriverLogs: ['bugreport', 'server'],
     },
   ],
   //
@@ -114,11 +113,6 @@ exports.config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  isLambda: true,
-  user: process.env.LAMBDATEST_USER,
-  key: process.env.LAMBDATEST_TOKEN,
-  seleniumHost: 'hub.lambdatest.com',
-  seleniumPort: 80,
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
@@ -271,12 +265,6 @@ exports.config = {
    * Runs after a Cucumber scenario
    */
   afterScenario: async (world, { passed }) => {
-    if (passed) {
-      await browser.execute('lambda-status=passed');
-    } else {
-      await browser.execute('lambda-status=failed');
-    }
-    await browser.reloadSession();
   },
   /**
    * Runs after a Cucumber feature
