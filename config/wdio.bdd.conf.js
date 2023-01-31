@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import allure from 'allure-commandline';
 import format from 'date-fns/format';
+import { argv } from 'yargs';
 
 const today = new Date();
 const formatedDate = format(today, 'dd/MMM/yyyy-HH:mm:ss');
@@ -67,19 +68,19 @@ exports.config = {
     // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
     // excludeDriverLogs: ['bugreport', 'server'],
   }],
-  */  capabilities: [
+  */
+  capabilities: [
     {
-      // maxInstances can get overwritten per capability. So if you have an in-house Selenium
-      // grid with only 5 firefox instances available you can make sure that not more than
-      // 5 instances get started at a time.
-      maxInstances: 1,
-      //
-      browserName: 'chrome',
-      acceptInsecureCerts: true,
-      // If outputDir is provided WebdriverIO can capture driver session logs
-      // it is possible to configure which logTypes to include/exclude.
-      // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
-      // excludeDriverLogs: ['bugreport', 'server'],
+      browserName: 'Chrome',
+      'LT:Options': {
+        build: `Chrome-${formatedDate}`,
+        platform: 'Windows',
+        browserName: 'Chrome',
+        version: '100.0',
+        resolution: '1920x1080',
+        'lambda:userFiles': ['house.png'],
+        network: true,
+      },
     },
   ],
   //
@@ -89,7 +90,7 @@ exports.config = {
   // Define all options that are relevant for the WebdriverIO instance here
   //
   // Level of logging verbosity: trace | debug | info | warn | error | silent
-  logLevel: 'info',
+  logLevel: 'error',
   //
   // Set specific log levels per logger
   // loggers:
@@ -112,7 +113,12 @@ exports.config = {
   // Set a base URL in order to shorten url command calls. If your `url` parameter starts
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
-  // gets prepended directly.
+  isLambda: true,
+  user: process.env.LAMBDATEST_USER,
+  key: process.env.LAMBDATEST_TOKEN,
+  seleniumHost: 'hub.lambdatest.com',
+  seleniumPort: 80,
+  baseUrl: 'https://the-internet.herokuapp.com/',
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
@@ -265,6 +271,11 @@ exports.config = {
    * Runs after a Cucumber scenario
    */
   afterScenario: async (world, { passed }) => {
+    if (passed) {
+      await browser.execute('lambda-status=passed');
+    } else {
+      await browser.execute('lambda-status=failed');
+    }
   },
   /**
    * Runs after a Cucumber feature
@@ -312,7 +323,7 @@ exports.config = {
     if (this.isLambda) {
       const reportError = new Error('Could not generate Allure report');
       const generation = allure(['generate', 'allure-results', '--clean']);
-      //const open = allure(['serve']);
+      // const open = allure(['serve']);
       return new Promise((resolve, reject) => {
         const generationTimeout = setTimeout(
           () => reject(reportError),
@@ -325,9 +336,9 @@ exports.config = {
           if (exitCode !== 0) {
             reject(reportError);
           }
-          //open.on('exit', function () {
+          // open.on('exit', function () {
           //
-          //});
+          // });
           resolve();
         });
       });
