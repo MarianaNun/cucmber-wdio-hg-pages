@@ -21,6 +21,9 @@ jobs:
     - name: Run e2e tests
       run: |
         yarn test:cucumber ${{ inputs.cli_params }}
+      env:
+        LAMBDATEST_USER: ${{ secrets.LAMBDATEST_USER }}
+        LAMBDATEST_TOKEN: ${{ secrets.LAMBDATEST_TOKEN }}
     - name: Get Allure history
       uses: actions/checkout@v2
       if: always()
